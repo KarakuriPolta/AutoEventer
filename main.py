@@ -9,6 +9,7 @@ import os
 from pytz import timezone
 import io
 import db
+import traceback
 
 # ロギング設定
 logging.basicConfig(
