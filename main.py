@@ -210,11 +210,17 @@ async def on_message(message):
                 channel = None
                 if not external:
                     try:
-                        channel = message.guild.get_channel(int(event['location']))
+                        # idを抽出
+                        _loc = str.strip(event['location'])
+                        if _loc[-1]=="/":
+                            _loc = _loc[:-1]
+                        _loc = _loc.split('/')[-1]
+                        channel = message.guild.get_channel(int(_loc))
                     except (ValueError, TypeError):
                         channel = None
-                    if channel is not None:
-                        external = True
+
+                if channel is not None:
+                    external = True
 
                 if external:
                     entity_type = discord.EntityType.external
@@ -228,10 +234,6 @@ async def on_message(message):
                 else:
                     entity_type = discord.EntityType.voice
                     location = None
-                    event['location'] = str.strip(event['location'])
-                    if event['location'][-1]=="/":
-                        event['location'] = event['location'][:-1]
-                    event['location'] = event['location'].split('/')[-1]
                     if not dm: # DMの場合はイベントを作成出来ないので登録を無視
                         if image != None:
                             await message.guild.create_scheduled_event(name=title, description=description, start_time=start_time, end_time=end_time, entity_type=entity_type, channel=channel, privacy_level=discord.PrivacyLevel.guild_only, image=image)
