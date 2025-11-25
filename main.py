@@ -219,7 +219,7 @@ async def on_message(message):
                     except (ValueError, TypeError):
                         channel = None
 
-                if channel is not None:
+                if channel is None:
                     external = True
 
                 if external:
