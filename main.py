@@ -104,7 +104,7 @@ async def on_message(message):
             '- start_time, end_time: "%Y-%m-%dT%H:%M:%SZ"形式のUTC時刻で記述',
             '- title: イベントのタイトル',
             '- description: 箇条書きで簡潔にまとめた説明文(配列ではなく改行コードを含めた文字列)',
-            '- external: Discordボイスチャンネルの場合はfalse、それ以外はtrue',
+            '- external: 場所の指定にDiscordボイスチャンネルと思われるリンクが指定されている場合はfalse、そうでなければtrue',
             '- location: externalがfalseの場合はチャンネルURL、trueの場合は場所の名前やURL(不明なら「不明」)',
             '',
             '# 日時の扱い',
