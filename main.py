@@ -104,8 +104,8 @@ async def on_message(message):
             '- start_time, end_time: "%Y-%m-%dT%H:%M:%SZ"形式のUTC時刻で記述',
             '- title: イベントのタイトル',
             '- description: 箇条書きで簡潔にまとめた説明文(配列ではなく改行コードを含めた文字列)',
-            '- external: 場所の指定にDiscordボイスチャンネルと思われるリンクが指定されている場合はfalse、そうでなければtrue',
-            '- location: externalがfalseの場合はチャンネルURL、trueの場合は場所の名前やURL(不明なら「不明」)',
+            '- external: 入力テキスト内に "https://discord.com/channels/" で始まる具体的なURLが明記されている場合のみ false。それ以外はすべて true',
+            '- location: externalがfalseの場合はそのチャンネルURL。trueの場合は場所の名前やURL(不明なら「不明」)。決して入力にないURLを捏造しないこと',
             '',
             '# 日時の扱い',
             '- プロンプトで与えられる日時は日本標準時(UTC+9)',
@@ -115,9 +115,9 @@ async def on_message(message):
             '- 同じ月でも現在日時よりあとの日付の場合は、今年のデータとする',
             '',
             '# 注意事項',
-            "- externalは、プロンプト内でhttps://discord.com/channels/(数値)/(数値) の形式の具体的なURLが場所として指定されている場合にのみ、falseとしてください。",
-            "  それ以外の場合は、たとえDiscordのボイスチャンネルと思われる文章であったとしても、externalをtrueとしてください。",
-            "  また、場所を不必要にURLにしないでください。",
+            '- URLの捏造禁止: 入力テキストに含まれていないURLを勝手に生成することは固く禁じます。',
+            '- Discordチャンネルの扱い: 「ボイスチャンネル」「VC」などの記述があっても、具体的なURL（https://discord.com/channels/...）が明記されていない限り、externalはtrueとし、locationにはその名称（例：「ボイスチャンネル」）を入れてください。',
+            '- 勝手に https://discord.com/channels/... のようなURLを作らないでください。',
         ]
         
         # ユーザープロンプト(メッセージ内容)
