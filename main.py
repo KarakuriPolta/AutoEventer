@@ -123,7 +123,7 @@ async def on_message(message):
             '- start_time, end_time: "%Y-%m-%dT%H:%M:%SZ"形式のUTC時刻で記述',
             '- title: イベントのタイトル',
             '- description: 箇条書きで簡潔にまとめた説明文(配列ではなく改行コードを含めた文字列)',
-            '- external: Discordボイスチャンネルの場合はfalse、それ以外はtrue',
+            '- external: 場所の指定にDiscordボイスチャンネルと思われるリンクが指定されている場合はfalse、そうでなければtrue',
             '- location: externalがfalseの場合はチャンネルURL、trueの場合は場所の名前やURL(不明なら「不明」)',
             '',
             '# 日時の扱い',
@@ -232,7 +232,13 @@ async def on_message(message):
                         else:
                             await message.guild.create_scheduled_event(name=title, description=description, start_time=start_time, end_time=end_time, entity_type=entity_type, location=location, privacy_level=discord.PrivacyLevel.guild_only)
                 else:
-                    entity_type = discord.EntityType.voice
+                    if isinstance(channel, discord.VoiceChannel):
+                        entity_type = discord.EntityType.voice
+                    elif isinstance(channel, discord.StageChannel):
+                        entity_type = discord.EntityType.stage_instance
+                    else:
+                        # デフォルトでvoiceに設定
+                        entity_type = discord.EntityType.voice
                     location = None
                     if not dm: # DMの場合はイベントを作成出来ないので登録を無視
                         if image != None:
