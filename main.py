@@ -204,11 +204,18 @@ async def on_message(message):
                     event['location'] = event['location'].split('/')[-1]
                     # print(event['location'])
                     channel = message.guild.get_channel(int(event['location']))
-                    if not dm: # DMの場合はイベントを作成出来ないので登録を無視
-                        if image != None:
-                            await message.guild.create_scheduled_event(name=title, description=description, start_time=start_time, end_time=end_time, entity_type=entity_type, channel=channel, privacy_level=discord.PrivacyLevel.guild_only, image=image)
-                        else:
-                            await message.guild.create_scheduled_event(name=title, description=description, start_time=start_time, end_time=end_time, entity_type=entity_type, channel=channel, privacy_level=discord.PrivacyLevel.guild_only)
+                    # チャンネルが見つからない場合はexternalに切り替え
+                    if channel is None:
+                        external = True
+                        entity_type = discord.EntityType.external
+                        location = event['location']  # チャンネルIDをlocationとして使用
+                        channel = None
+                
+                if not dm: # DMの場合はイベントを作成出来ないので登録を無視
+                    if image != None:
+                        await message.guild.create_scheduled_event(name=title, description=description, start_time=start_time, end_time=end_time, entity_type=entity_type, channel=channel, privacy_level=discord.PrivacyLevel.guild_only, image=image)
+                    else:
+                        await message.guild.create_scheduled_event(name=title, description=description, start_time=start_time, end_time=end_time, entity_type=entity_type, channel=channel, privacy_level=discord.PrivacyLevel.guild_only)
 
                 # icalendar形式で出力
                 ical_text += "BEGIN:VEVENT\n"
