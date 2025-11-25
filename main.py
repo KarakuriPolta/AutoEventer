@@ -68,7 +68,12 @@ client = discord.Client(intents=discord.Intents.all())
 @client.event
 async def on_ready():
     print('Bot is ready')
-    db.init_db()
+    try:
+        db.init_db()
+        logging.info("DB初期化完了")
+    except Exception as e:
+        logging.error(f"DB初期化失敗: {e}")
+        # DB初期化に失敗してもbotは起動を続行
 
 @client.event
 async def on_message(message):
@@ -82,9 +87,14 @@ async def on_message(message):
     if dm or message.content.startswith('!ev'):
         # 以降はGeminiを用いるので、制限を確認
         user_id = str(message.author.id)
-        allowed, error_message = db.check_limits(user_id)
-        if not allowed:
-            await message.channel.send(error_message)
+        try:
+            allowed, error_message = db.check_limits(user_id)
+            if not allowed:
+                await message.channel.send(error_message)
+                return
+        except Exception as e:
+            logging.error(f"DB制限チェックエラー: {e}")
+            await message.channel.send("データベースエラーが発生しました。Bot管理者に連絡してください。")
             return
         # メッセージに画像が添付されている場合は初めの一枚を取得
         image = None
